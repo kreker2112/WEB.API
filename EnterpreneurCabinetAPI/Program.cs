@@ -1,24 +1,27 @@
 using EnterpreneurCabinetAPI.Services;
 using MongoDB.Driver;
 using Newtonsoft.Json.Serialization;
+using Amazon.KeyManagementService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Configure AWS KMS Client
+var awsOptions = builder.Configuration.GetAWSOptions();
+builder.Services.AddAWSService<IAmazonKeyManagementService>(awsOptions);
 
+// Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllersWithViews().AddNewtonsoftJson(options =>
-options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore)
-    .AddNewtonsoftJson(options=>options.SerializerSettings.ContractResolver
-    = new DefaultContractResolver());
-;
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+});
 builder.Services.AddMemoryCache();
 
 // MongoDB registration
-
 var mongoDbSettings = builder.Configuration.GetSection("DatabaseSettings");
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
@@ -32,7 +35,6 @@ builder.Services.AddSingleton<IMongoDatabase>(serviceProvider =>
 });
 
 // Adding CORS
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("MyCorsPolicy", configurePolicy: builder =>
@@ -48,7 +50,6 @@ builder.Services.AddCors(options =>
                .AllowAnyMethod());
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -59,9 +60,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("MyCorsPolicy");
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
+
