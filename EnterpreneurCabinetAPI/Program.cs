@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using Newtonsoft.Json.Serialization;
 using Amazon.KeyManagementService;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure AWS KMS Client
@@ -44,6 +45,7 @@ builder.Services.AddCors(options =>
             "http://35.156.19.206",
             "http://35.157.100.194:22892",
             "http://35.156.19.206:22892",
+            "http://3.123.191.106:22891",
             "http://localhost:22892"
         )
                .AllowAnyHeader()
