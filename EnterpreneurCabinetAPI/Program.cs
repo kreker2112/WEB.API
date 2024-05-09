@@ -27,19 +27,23 @@ var mongoDbSettings = builder.Configuration.GetSection("DatabaseSettings");
 
 // Logging the connection string to ensure it's being retrieved correctly
 var connectionString = builder.Configuration.GetConnectionString("MongoDB");
-Console.WriteLine($"Connection string: {connectionString}");
+var configValue = builder.Configuration["ConnectionStrings:MongoDB"];
+Console.WriteLine($"MongoDB Connection String from appsettings: '{configValue}'");
+
 
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
     try
     {
+        var connectionString = builder.Configuration.GetConnectionString("MongoDB");
+        Console.WriteLine($"Attempting to create MongoClient with connection string: {connectionString}");
         var settings = MongoClientSettings.FromConnectionString(connectionString);
         return new MongoClient(settings);
     }
     catch (Exception ex)
     {
         Console.WriteLine($"Error creating MongoClient: {ex.Message}");
-        throw;  // Rethrow the exception to make sure the application doesn't start if there's a configuration issue
+        throw;
     }
 });
 builder.Services.AddSingleton<IMongoDatabase>(serviceProvider =>
