@@ -39,4 +39,4 @@ TestResults/
 coverage/
 
 # Ключи
-*.pem
+# *.pem
