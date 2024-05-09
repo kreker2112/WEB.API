@@ -2,7 +2,7 @@ using EnterpreneurCabinetAPI.Services;
 using MongoDB.Driver;
 using Newtonsoft.Json.Serialization;
 using Amazon.KeyManagementService;
-
+using System; // Ensure System namespace is included for Console
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,10 +24,23 @@ builder.Services.AddMemoryCache();
 
 // MongoDB registration
 var mongoDbSettings = builder.Configuration.GetSection("DatabaseSettings");
+
+// Logging the connection string to ensure it's being retrieved correctly
+var connectionString = builder.Configuration.GetConnectionString("MongoDB");
+Console.WriteLine($"Connection string: {connectionString}");
+
 builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
-    var settings = MongoClientSettings.FromConnectionString(builder.Configuration.GetConnectionString("MongoDB"));
-    return new MongoClient(settings);
+    try
+    {
+        var settings = MongoClientSettings.FromConnectionString(connectionString);
+        return new MongoClient(settings);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error creating MongoClient: {ex.Message}");
+        throw;  // Rethrow the exception to make sure the application doesn't start if there's a configuration issue
+    }
 });
 builder.Services.AddSingleton<IMongoDatabase>(serviceProvider =>
 {
