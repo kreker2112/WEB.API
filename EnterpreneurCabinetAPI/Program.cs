@@ -79,5 +79,5 @@ if (app.Environment.IsDevelopment())
 app.UseCors("MyCorsPolicy");
 app.UseAuthorization();
 app.MapControllers();
-app.Run("http://0.0.0.0:22892");
+app.Run("http://127.0.0.1:27017");
 
