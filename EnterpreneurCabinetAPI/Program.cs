@@ -35,15 +35,13 @@ builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
 {
     try
     {
-        var connectionString = builder.Configuration.GetConnectionString("MongoDB");
-        Console.WriteLine($"Attempting to create MongoClient with connection string: {connectionString}");
         var settings = MongoClientSettings.FromConnectionString(connectionString);
         return new MongoClient(settings);
     }
     catch (Exception ex)
     {
         Console.WriteLine($"Error creating MongoClient: {ex.Message}");
-        throw;
+        throw;  // Rethrow the exception to make sure the application doesn't start if there's a configuration issue
     }
 });
 builder.Services.AddSingleton<IMongoDatabase>(serviceProvider =>
@@ -61,7 +59,9 @@ builder.Services.AddCors(options =>
             "http://3.123.191.106:22891",
             "http://3.123.191.106:22892",
             "http://localhost:22892",
-            "http://0.0.0.0:22892"
+            "http://0.0.0.0:22892",
+            "http://127.0.0.1:27017"
+
         )
                .AllowAnyHeader()
                .AllowAnyMethod());
@@ -79,5 +79,5 @@ if (app.Environment.IsDevelopment())
 app.UseCors("MyCorsPolicy");
 app.UseAuthorization();
 app.MapControllers();
-app.Run("http://127.0.0.1:27017");
+app.Run("http://0.0.0.0:22892");
 
