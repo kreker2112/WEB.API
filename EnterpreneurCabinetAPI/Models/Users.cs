@@ -9,7 +9,7 @@ namespace EnterpreneurCabinetAPI.Models
         public int Year { get; set; }
 
         [BsonElement("quarters")]
-        public List<Quarter> Quarters { get; set; } = new();
+        public List<Quarter> Quarters { get; set; } = [];
     }
 
     public class Quarter
@@ -18,7 +18,7 @@ namespace EnterpreneurCabinetAPI.Models
         public string QuarterName { get; set; } = string.Empty;
 
         [BsonElement("receipts")]
-        public List<string> Receipts { get; set; } = new();
+        public List<string> Receipts { get; set; } = [];
     }
 
     public class User
@@ -49,6 +49,6 @@ namespace EnterpreneurCabinetAPI.Models
         public string? RegistrationAddress { get; set; }
 
         [BsonElement("IncomeReceipts")]
-        public List<Receipt> IncomeReceipts { get; set; } = new();
+        public List<Receipt> IncomeReceipts { get; set; } = [];
     }
 }

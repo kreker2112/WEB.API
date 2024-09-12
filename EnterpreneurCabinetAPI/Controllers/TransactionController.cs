@@ -11,7 +11,6 @@ namespace EnterpreneurCabinetAPI.Controllers
     {
         private readonly IMongoClient _mongoClient = mongoClient;
 
-        // Getting all transactions details from the database 
         [HttpGet]
         public async Task<IActionResult> GetAsync()
         {
@@ -22,7 +21,6 @@ namespace EnterpreneurCabinetAPI.Controllers
             return new JsonResult(details);
         }
 
-        // Adding a new transaction to the database
         [HttpPost]
         public async Task<IActionResult> PostAsync([FromBody] Transactions transaction)
         {
@@ -30,7 +28,6 @@ namespace EnterpreneurCabinetAPI.Controllers
             return new JsonResult("AddedSuccessfully");
         }
 
-        // Delete all transactions from the database
         [HttpDelete]
         public async Task<IActionResult> DeleteAsync()
         {
