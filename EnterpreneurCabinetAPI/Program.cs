@@ -8,10 +8,8 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Configure AWS KMS Client
-        var awsOptions = builder.Configuration.GetAWSOptions();
+        //var awsOptions = builder.Configuration.GetAWSOptions();
 
-        // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddSingleton<MongoDBService>();
         builder.Services.AddEndpointsApiExplorer();
@@ -23,15 +21,12 @@ internal class Program
         });
         builder.Services.AddMemoryCache();
 
-        // MongoDB registration
         var mongoDbSettings = builder.Configuration.GetSection("DatabaseSettings");
 
-        // Logging the connection string to ensure it's being retrieved correctly
         var connectionString = builder.Configuration.GetConnectionString("MongoDB");
         var configValue = builder.Configuration["ConnectionStrings:MongoDB"];
         Console.WriteLine($"MongoDB Connection String from appsettings: '{configValue}'");
 
-        // Register MongoDB client and database
         builder.Services.AddSingleton<IMongoClient>(serviceProvider =>
         {
             try
@@ -52,7 +47,6 @@ internal class Program
             return client.GetDatabase(mongoDbSettings["DatabaseName"]);
         });
 
-        // Adding CORS
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("MyCorsPolicy", configurePolicy: builder =>

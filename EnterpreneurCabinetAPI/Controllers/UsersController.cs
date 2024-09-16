@@ -52,7 +52,18 @@ namespace EnterpreneurCabinetAPI.Controllers
             return Ok(quarters);
         }
 
-        [HttpGet("{userId}/receipts/quarter/Q1")]
+        [HttpGet("{userId}/receipts/specific")]
+        public async Task<IActionResult> GetReceiptsByYearAndQuarter(string userId, [FromQuery] int year, [FromQuery] string quarter)
+        {
+            var receipts = await _mongoDBService.GetReceiptsByYearAndQuarterAsync(userId, year, quarter);
+
+            if (receipts == null || receipts.Count == 0)
+                return NotFound($"No receipts found for the specified year {year} and quarter {quarter}");
+
+            return Ok(receipts);
+        }
+
+        [HttpGet("{userId}/receipts/quarters/Q1")]
         public async Task<IActionResult> GetReceiptsForFirstQuarter(string userId, [FromQuery] int year)
         {
             var receipts = await _mongoDBService.GetReceiptsForMultipleQuartersAsync(userId, year, 1);
@@ -63,7 +74,7 @@ namespace EnterpreneurCabinetAPI.Controllers
             return Ok(receipts);
         }
 
-        [HttpGet("{userId}/receipts/quarter/Q2")]
+        [HttpGet("{userId}/receipts/quarters/Q2")]
         public async Task<IActionResult> GetReceiptsForFirstAndSecondQuarter(string userId, [FromQuery] int year)
         {
             var receipts = await _mongoDBService.GetReceiptsForMultipleQuartersAsync(userId, year, 2);
@@ -74,7 +85,7 @@ namespace EnterpreneurCabinetAPI.Controllers
             return Ok(receipts);
         }
 
-        [HttpGet("{userId}/receipts/quarter/Q3")]
+        [HttpGet("{userId}/receipts/quarters/Q3")]
         public async Task<IActionResult> GetReceiptsForFirstThreeQuarters(string userId, [FromQuery] int year)
         {
             var receipts = await _mongoDBService.GetReceiptsForMultipleQuartersAsync(userId, year, 3);
@@ -85,7 +96,7 @@ namespace EnterpreneurCabinetAPI.Controllers
             return Ok(receipts);
         }
 
-        [HttpGet("{userId}/receipts/quarter/Q4")]
+        [HttpGet("{userId}/receipts/quarters/Q4")]
         public async Task<IActionResult> GetReceiptsForAllFourQuarters(string userId, [FromQuery] int year)
         {
             var receipts = await _mongoDBService.GetReceiptsForMultipleQuartersAsync(userId, year, 4);
