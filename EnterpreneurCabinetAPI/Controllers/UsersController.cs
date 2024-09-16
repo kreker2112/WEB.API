@@ -116,5 +116,16 @@ namespace EnterpreneurCabinetAPI.Controllers
 
             return Ok("Receipt added successfully");
         }
+
+        [HttpGet("{userId}/tax/details")]
+        public async Task<IActionResult> GetTaxPaymentDetails(string userId)
+        {
+            var taxDetails = await _mongoDBService.GetTaxPaymentDetailsAsync(userId);
+
+            if (taxDetails == null)
+                return NotFound($"Tax payment details not found for user {userId}");
+
+            return Ok(taxDetails);
+        }
     }
 }

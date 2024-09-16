@@ -21,6 +21,22 @@ namespace EnterpreneurCabinetAPI.Models
         public List<string> Receipts { get; set; } = [];
     }
 
+    public class TaxPaymentDetails
+    {
+        [BsonElement("RecipientEDRPOU")]
+        public string RecipientEDRPOU { get; set; } = string.Empty;
+
+        [BsonElement("RecipientName")]
+        public string RecipientName { get; set; } = string.Empty;
+
+        [BsonElement("Account")]
+        public string Account { get; set; } = string.Empty;
+
+        [BsonElement("AccountName")]
+        public string AccountName { get; set; } = string.Empty;
+
+    }
+
     public class User
     {
         [BsonId]
@@ -50,5 +66,8 @@ namespace EnterpreneurCabinetAPI.Models
 
         [BsonElement("IncomeReceipts")]
         public List<Receipt> IncomeReceipts { get; set; } = [];
+
+        [BsonElement("TaxPaymentDetails")]
+        public TaxPaymentDetails? TaxPaymentDetails { get; set; }
     }
 }

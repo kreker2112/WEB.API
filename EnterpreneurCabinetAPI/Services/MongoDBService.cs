@@ -74,6 +74,13 @@ namespace EnterpreneurCabinetAPI.Services
             return newUser;
         }
 
+        public async Task<TaxPaymentDetails?> GetTaxPaymentDetailsAsync(string userId)
+        {
+            var user = await _users.Find(u => u.UserID == userId).FirstOrDefaultAsync();
+            return user?.TaxPaymentDetails;
+        }
+
+
         public async Task<List<Quarter>?> GetReceiptsByYearAsync(string userId, int year)
         {
             var user = await _users.Find(u => u.UserID == userId).FirstOrDefaultAsync();
