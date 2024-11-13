@@ -1,39 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+using EnterpreneurCabinetAPI.Services;
 using EnterpreneurCabinetAPI.Models;
-
 
 namespace EnterpreneurCabinetAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TransactionsController(IMongoClient mongoClient) : ControllerBase
+    public class TransactionsController(MongoDBService mongoDBService) : ControllerBase
     {
-        private readonly IMongoClient _mongoClient = mongoClient;
+        private readonly MongoDBService _mongoDBService = mongoDBService;
 
+        // Получение всех транзакций
         [HttpGet]
-        public async Task<IActionResult> GetAsync()
+        public async Task<IActionResult> GetAllTransactions()
         {
-            var collection = _mongoClient.GetDatabase("mypetprojectsdb").GetCollection<Transactions>("Transactions");
-            var details = await collection.Find(Builders<Transactions>.Filter.Empty)
-                                          .Project(t => t.TransactionsDetail)
-                                          .ToListAsync();
-            return new JsonResult(details);
+            var transactionDetails = await _mongoDBService.GetTransactionDetailsAsync();
+            if (transactionDetails == null || transactionDetails.Count == 0)
+                return NotFound("No transactions found.");
+
+            return Ok(transactionDetails);
         }
 
+        // Добавление новой транзакции
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] Transactions transaction)
+        public async Task<IActionResult> AddTransaction([FromBody] Transactions transaction)
         {
-            await _mongoClient.GetDatabase("mypetprojectsdb").GetCollection<Transactions>("Transactions").InsertOneAsync(transaction);
-            return new JsonResult("AddedSuccessfully");
+            var addedTransaction = await _mongoDBService.PostAsync(transaction);
+            return CreatedAtAction(nameof(GetAllTransactions), new { id = addedTransaction.Id }, addedTransaction);
         }
 
+        // Удаление всех транзакций
         [HttpDelete]
-        public async Task<IActionResult> DeleteAsync()
+        public async Task<IActionResult> DeleteAllTransactions()
         {
-            await _mongoClient.GetDatabase("mypetprojectsdb").GetCollection<Transactions>("Transactions").DeleteManyAsync(transaction => true);
-            return new JsonResult("DeletedSuccessfully");
+            await _mongoDBService.RemoveAllAsync();
+            return Ok("All transactions deleted successfully");
         }
     }
 }
-
