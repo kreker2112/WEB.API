@@ -10,7 +10,6 @@ namespace EnterpreneurCabinetAPI.Controllers
     {
         private readonly MongoDBService _mongoDBService = mongoDBService;
 
-        // Получение всех транзакций
         [HttpGet]
         public async Task<IActionResult> GetAllTransactions()
         {
@@ -21,7 +20,6 @@ namespace EnterpreneurCabinetAPI.Controllers
             return Ok(transactionDetails);
         }
 
-        // Добавление новой транзакции
         [HttpPost]
         public async Task<IActionResult> AddTransaction([FromBody] Transactions transaction)
         {
@@ -29,7 +27,6 @@ namespace EnterpreneurCabinetAPI.Controllers
             return CreatedAtAction(nameof(GetAllTransactions), new { id = addedTransaction.Id }, addedTransaction);
         }
 
-        // Удаление всех транзакций
         [HttpDelete]
         public async Task<IActionResult> DeleteAllTransactions()
         {
