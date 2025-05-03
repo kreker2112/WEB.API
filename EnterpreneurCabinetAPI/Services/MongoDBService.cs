@@ -187,5 +187,34 @@ namespace EnterpreneurCabinetAPI.Services
             }
             return false;
         }
+
+        public async Task<List<string>?> GetReceiptsBeforeQuarterAsync(string userId, int year, string quarter)
+        {
+            var user = await _users.Find(u => u.UserID == userId).FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                var receiptsForYear = user.IncomeReceipts.FirstOrDefault(r => r.Year == year);
+                if (receiptsForYear != null)
+                {
+                    var allReceipts = new List<string>();
+
+                    if (!quarter.StartsWith("Q") || quarter.Length != 2 || !int.TryParse(quarter.AsSpan(1), out int targetQuarterNumber))
+                        return null;
+
+                    for (int i = 1; i < targetQuarterNumber; i++)
+                    {
+                        string currentQuarter = $"Q{i}";
+                        var q = receiptsForYear.Quarters.FirstOrDefault(q => q.QuarterName == currentQuarter);
+                        if (q != null)
+                            allReceipts.AddRange(q.Receipts);
+                    }
+
+                    return allReceipts;
+                }
+            }
+
+            return null;
+        }
     }
 }

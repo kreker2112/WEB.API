@@ -107,6 +107,17 @@ namespace EnterpreneurCabinetAPI.Controllers
             return Ok(receipts);
         }
 
+        [HttpGet("{userId}/receipts/before-quarter")]
+        public async Task<IActionResult> GetReceiptsBeforeQuarter(string userId, [FromQuery] int year, [FromQuery] string quarter)
+        {
+            var receipts = await _mongoDBService.GetReceiptsBeforeQuarterAsync(userId, year, quarter);
+
+            if (receipts == null || receipts.Count == 0)
+                return NotFound($"No receipts found for user {userId}, year {year}, before quarter {quarter}");
+
+            return Ok(receipts);
+        }
+
         [HttpPost("{userId}/receipts")]
         public async Task<IActionResult> AddReceipt(string userId, [FromQuery] int year, [FromQuery] string quarter, [FromBody] string newReceipt)
         {
